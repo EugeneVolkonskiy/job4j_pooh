@@ -28,14 +28,14 @@ public class TopicSchema implements Schema {
             for (var queueKey : receivers.keySet()) {
                 var queue = data.getOrDefault(queueKey, new LinkedBlockingQueue<>());
                 var receiversByQueue = receivers.get(queueKey);
+                if (!queue.isEmpty()) {
                 for (Receiver receiver : receiversByQueue) {
-                    if (!queue.isEmpty()) {
                         for (String text : queue) {
                             receiver.receive(text);
                         }
                     }
+                    queue.clear();
                 }
-                queue.clear();
             }
             condition.off();
             try {
